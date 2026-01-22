@@ -1,46 +1,36 @@
-name: Debug Deploy
-
+name: Deploy Website
 on:
   push:
     branches:
       - main
-
 jobs:
-  build-and-deploy:
-    name: 🚀 Debug Build & Upload
+  deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: 🚚 Code ophalen
+      - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: ⚙️ Node.js installeren
+      
+      - name: Install Node
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-
-      - name: 📦 Dependencies installeren
+      
+      - name: Install dependencies
         run: npm install
-
-      - name: 🏗️ Website bouwen
-        # We negeren even typescript fouten om zeker te weten dat er 'iets' gebouwd wordt
-        run: npx vite build 
-
-      - name: 🔍 CHECK: Wat zit er in de dist map?
-        # Deze stap laat in de logs zien welke bestanden er klaar staan
+      
+      - name: Build site
+        run: npx vite build
+      
+      - name: List files
         run: ls -R dist/
-
-      - name: 📂 Uploaden via FTP
+      
+      - name: FTP Upload
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
-          server-dir: /home/rik/domains/luisterbingo.nl/public_html/
-          # Deze instellingen helpen tegen lege mappen en connectie problemen:
+          server-dir: ./
           protocol: ftps
           security: loose
-          exclude: |
-            **/.git*
-            **/.git*/**
-            **/node_modules/**
