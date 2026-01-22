@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="nl">
 <head>
@@ -9,27 +10,62 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body { font-family: 'Inter', sans-serif; }
-        .celebration-bg { background: radial-gradient(circle, #f97316 0%, #ea580c 100%); }
-        @keyframes victory-bounce {
-            0%, 100% { transform: translateY(0) scale(1); }
-            50% { transform: translateY(-20px) scale(1.1); }
+        body {
+            font-family: 'Inter', sans-serif;
         }
-        .animate-victory { animation: victory-bounce 0.8s ease infinite; }
+        
+        /* Bingo kaart activatie */
+        .bingo-cell.active {
+          background-color: #f97316;
+          color: white;
+          transform: scale(0.95);
+        }
+
+        /* Celebration Animaties */
+        @keyframes victory-bounce {
+            0%, 100% { transform: translateY(0) scale(1) rotate(0); }
+            25% { transform: translateY(-25px) scale(1.1) rotate(-3deg); }
+            75% { transform: translateY(-10px) scale(1.05) rotate(3deg); }
+        }
+
+        @keyframes confetti-fall {
+            0% { transform: translateY(-100vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255,255,255,0.3); }
+            50% { box-shadow: 0 0 50px rgba(255,255,255,0.6); }
+        }
+
+        .animate-victory {
+            animation: victory-bounce 0.8s cubic-bezier(0.36, 0, 0.66, -0.56) infinite;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            top: -50px;
+            z-index: 100;
+            user-select: none;
+            pointer-events: none;
+            animation: confetti-fall 4s linear infinite;
+        }
+
+        .celebration-bg {
+            background: radial-gradient(circle, #f97316 0%, #ea580c 100%);
+        }
     </style>
-    <script type="importmap">
-    {
-      "imports": {
-        "react-dom/": "https://esm.sh/react-dom@^18.2.0/",
-        "react/": "https://esm.sh/react@^18.2.0/",
-        "react": "https://esm.sh/react@^18.2.0"
-      }
-    }
-    </script>
+<script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
 </head>
 <body class="bg-blue-50 text-slate-900 min-h-screen">
     <div id="root"></div>
-    <!-- Dit laadt je applicatie -->
-    <script type="module" src="./index.tsx"></script>
 </body>
 </html>
