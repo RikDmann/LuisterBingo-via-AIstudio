@@ -1,22 +1,41 @@
-name: Deploy website
+name: Deploy Vite App
+
 on:
   push:
     branches:
       - main
+
 jobs:
-  web-deploy:
-    name: 🎉 Uploaden naar DirectAdmin
+  build-and-deploy:
+    name: 🚀 Bouwen en Uploaden
     runs-on: ubuntu-latest
     steps:
-    - name: 🚚 Code ophalen
-      uses: actions/checkout@v4
-    
-    - name: 📂 Bestanden versturen via FTP
-      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-      with:
-        server: ${{ secrets.FTP_SERVER }}
-        username: ${{ secrets.FTP_USERNAME }}
-        password: ${{ secrets.FTP_PASSWORD }}
-        # BELANGRIJK: Dit is de map op je server waar de site moet staan.
-        # Bij DirectAdmin is dit bijna altijd ./public_html/
-        server-dir: ./node-app/
+      # Stap 1: Haal de code op
+      - name: 🚚 Code ophalen
+        uses: actions/checkout@v4
+
+      # Stap 2: Installeer Node.js
+      - name: ⚙️ Node.js installeren
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Stap 3: Installeer de pakketjes (leest jouw package.json)
+      - name: 📦 Dependencies installeren
+        run: npm install
+
+      # Stap 4: Bouw de site (Dit voert 'tsc && vite build' uit)
+      - name: 🏗️ Website bouwen
+        run: npm run build
+
+      # Stap 5: Uploaden naar DirectAdmin
+      - name: 📂 Uploaden via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          # Omdat je Vite gebruikt, heet je map 'dist'
+          local-dir: ./dist/
+          # We zetten het in de hoofdmap van je hosting
+          server-dir: ./public_html/
