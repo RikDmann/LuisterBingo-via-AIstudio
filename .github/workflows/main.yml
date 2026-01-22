@@ -19,4 +19,4 @@ jobs:
         password: ${{ secrets.FTP_PASSWORD }}
         # BELANGRIJK: Dit is de map op je server waar de site moet staan.
         # Bij DirectAdmin is dit bijna altijd ./public_html/
-        server-dir: ./public_html/
+        server-dir: ./node-app/
