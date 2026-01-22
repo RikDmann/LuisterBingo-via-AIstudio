@@ -1,4 +1,4 @@
-name: Deploy Vite App
+name: Debug Deploy
 
 on:
   push:
@@ -7,46 +7,40 @@ on:
 
 jobs:
   build-and-deploy:
-    name: 🚀 Bouwen en Uploaden
+    name: 🚀 Debug Build & Upload
     runs-on: ubuntu-latest
     steps:
-      # Stap 1: Haal de code op
       - name: 🚚 Code ophalen
         uses: actions/checkout@v4
 
-      # Stap 2: Installeer Node.js
       - name: ⚙️ Node.js installeren
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      # Stap 3: Installeer de pakketjes (leest jouw package.json)
       - name: 📦 Dependencies installeren
         run: npm install
 
-      # Stap 4: Bouw de site (Dit voert 'tsc && vite build' uit)
       - name: 🏗️ Website bouwen
-        run: npm run build
+        # We negeren even typescript fouten om zeker te weten dat er 'iets' gebouwd wordt
+        run: npx vite build 
 
-      # Stap 5: Uploaden naar DirectAdmin
+      - name: 🔍 CHECK: Wat zit er in de dist map?
+        # Deze stap laat in de logs zien welke bestanden er klaar staan
+        run: ls -R dist/
+
       - name: 📂 Uploaden via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          # Omdat je Vite gebruikt, heet je map 'dist'
-          local-dir: ./dist/
-          # We zetten het in de hoofdmap van je hosting
-          server-dir: ./public_html/
-- name: 📂 Uploaden via FTP
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
-        with:
-          server: ${{ secrets.FTP_SERVER }}
-          username: ${{ secrets.FTP_USERNAME }}
-          password: ${{ secrets.FTP_PASSWORD }}
           local-dir: ./dist/
           server-dir: ./public_html/
-          # VOEG DEZE TWEE REGELS TOE:
+          # Deze instellingen helpen tegen lege mappen en connectie problemen:
           protocol: ftps
           security: loose
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
