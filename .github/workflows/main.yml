@@ -35,13 +35,13 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           
-          # Dit is de map die Vite maakt:
+          # Dit is de map die Vite maakt op GitHub:
           local-dir: ./dist/
           
-          # DIT IS HET BELANGRIJKSTE STUKJE:
+          # DIT IS DE BELANGRIJKSTE REGEL:
           # We gebruiken het volledige pad zodat hij nooit meer kan verdwalen.
           server-dir: /home/rik/domains/luisterbingo.nl/public_html/
           
-          # Deze instellingen voorkomen verbindingsfouten:
+          # Deze instellingen voorkomen verbindingsfouten bij DirectAdmin:
           protocol: ftps
           security: loose
