@@ -1,0 +1,47 @@
+name: Deploy Website
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy naar DirectAdmin
+    runs-on: ubuntu-latest
+    steps:
+      # Stap 1: Haal de code op van GitHub
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v4
+
+      # Stap 2: Installeer Node.js (versie 20)
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      # Stap 3: Installeer alle pakketjes
+      - name: 📦 Install dependencies
+        run: npm install
+
+      # Stap 4: Bouw de website (maakt de 'dist' map)
+      - name: 🏗️ Build website
+        run: npm run build
+
+      # Stap 5: Stuur de 'dist' map naar de server
+      - name: 📂 FTP Upload
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          
+          # Dit is de map die Vite maakt:
+          local-dir: ./dist/
+          
+          # DIT IS HET BELANGRIJKSTE STUKJE:
+          # We gebruiken het volledige pad zodat hij nooit meer kan verdwalen.
+          server-dir: /home/rik/domains/luisterbingo.nl/public_html/
+          
+          # Deze instellingen voorkomen verbindingsfouten:
+          protocol: ftps
+          security: loose
