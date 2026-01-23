@@ -32,7 +32,7 @@ jobs:
           local-dir: ./dist/
           
           # Jouw specifieke pad:
-          server-dir: /home/rik/domains/luisterbingo.nl/public_html/
+          server-dir: domains/luisterbingo.nl/public_html/
           
           # We gebruiken nu standaard FTP om de 'ECONNRESET' fout te voorkomen:
           protocol: ftp
